@@ -23,7 +23,7 @@ export interface StudentProfile {
   telephone: string;
   formationId: number;
   anneeUniversitaire: string;
-  statut: 'ACTIF' | 'SUSPENDU' | 'DIPLOME';
+  statut: 'ACTIF' | 'SUSPENDU' | 'DIPLOME' | 'EN_ATTENTE';
 }
 
 export interface TeacherProfile {
@@ -32,6 +32,28 @@ export interface TeacherProfile {
   grade: string;
   telephone: string;
   bureau: string;
+}
+
+export interface SystemSettings {
+  universityName: string;
+  subTitle: string;
+  academicYear: string;
+  contactEmail: string;
+  sha256SealKey: string;
+  allowStudentSelfDownload: boolean;
+  maintenanceMode: boolean;
+  retakeThreshold: number;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  adminId: string;
+  adminName: string;
+  action: string;
+  module: 'AUTH' | 'USERS' | 'CURRICULUM' | 'EXAMS' | 'GRADES' | 'DOCUMENTS' | 'SYSTEM';
+  severity: 'INFO' | 'WARNING' | 'CRITICAL';
+  details: string;
 }
 
 export interface Formation {

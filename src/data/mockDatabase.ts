@@ -490,3 +490,58 @@ export const INITIAL_NOTIFICATIONS: NotificationRecord[] = [
     lu: false,
   },
 ];
+
+export const INITIAL_SYSTEM_SETTINGS = {
+  universityName: 'Université des Sciences & Technologies de Paris (USTP)',
+  subTitle: 'Établissement Public à Caractère Scientifique, Culturel et Professionnel',
+  academicYear: '2025-2026',
+  contactEmail: 'contact.scolarite@univ-paris-tech.fr',
+  sha256SealKey: 'ustp_sha256_root_auth_2026_x89a',
+  allowStudentSelfDownload: true,
+  maintenanceMode: false,
+  retakeThreshold: 10.0,
+};
+
+export const INITIAL_AUDIT_LOGS = [
+  {
+    id: 'log-1',
+    timestamp: '2026-02-01T15:00:00Z',
+    adminId: 'user-admin-1',
+    adminName: 'Dr. Valérie Mercier',
+    action: 'Émission Relevé de Notes',
+    module: 'DOCUMENTS' as const,
+    severity: 'INFO' as const,
+    details: 'Émission officielle du relevé de notes S5 pour Mansouri Sarah (ETU-2026-8819)',
+  },
+  {
+    id: 'log-2',
+    timestamp: '2026-01-28T18:00:00Z',
+    adminId: 'user-admin-1',
+    adminName: 'Dr. Valérie Mercier',
+    action: 'Validation du PV de Jury',
+    module: 'GRADES' as const,
+    severity: 'INFO' as const,
+    details: 'Validation de la session normale S5 Licence 3 Informatique',
+  },
+  {
+    id: 'log-3',
+    timestamp: '2026-01-15T09:30:00Z',
+    adminId: 'user-admin-1',
+    adminName: 'Dr. Valérie Mercier',
+    action: 'Révocation Document Anti-Fraude',
+    module: 'DOCUMENTS' as const,
+    severity: 'WARNING' as const,
+    details: 'Révocation du certificat doc-revoked-sample-999 suite réorientation filière',
+  },
+  {
+    id: 'log-4',
+    timestamp: '2025-09-01T08:00:00Z',
+    adminId: 'user-admin-1',
+    adminName: 'Dr. Valérie Mercier',
+    action: 'Initialisation Système RBAC',
+    module: 'SYSTEM' as const,
+    severity: 'INFO' as const,
+    details: 'Démarrage de l’année académique 2025-2026 et vérification des clés SHA-256',
+  },
+];
+

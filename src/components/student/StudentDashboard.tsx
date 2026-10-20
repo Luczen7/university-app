@@ -38,6 +38,8 @@ interface StudentDashboardProps {
   documents: DocumentEmis[];
   onVerifyDoc: (docId: string) => void;
   onGenerateDoc: (type: 'STUDENT_CARD') => void;
+  activeSubTab?: 'CARD' | 'CERTIFICATE' | 'TRANSCRIPT' | 'EXAMS' | 'COURSES';
+  onSubTabChange?: (tab: 'CARD' | 'CERTIFICATE' | 'TRANSCRIPT' | 'EXAMS' | 'COURSES') => void;
 }
 
 export const StudentDashboard: React.FC<StudentDashboardProps> = ({
@@ -51,10 +53,19 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
   documents,
   onVerifyDoc,
   onGenerateDoc,
+  activeSubTab: activeSubTabProp,
+  onSubTabChange,
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<
+  const [localSubTab, setLocalSubTab] = useState<
     'CARD' | 'CERTIFICATE' | 'TRANSCRIPT' | 'EXAMS' | 'COURSES'
   >('CARD');
+
+  const activeSubTab = activeSubTabProp || localSubTab;
+  const setActiveSubTab = (tab: 'CARD' | 'CERTIFICATE' | 'TRANSCRIPT' | 'EXAMS' | 'COURSES') => {
+    setLocalSubTab(tab);
+    if (onSubTabChange) onSubTabChange(tab);
+  };
+
   const [selectedMatiereFilter, setSelectedMatiereFilter] = useState<number | 'ALL'>('ALL');
 
   // Filter exams and retakes for student
@@ -110,68 +121,33 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
           </div>
         </div>
 
-        {/* Sub-Tabs navigation */}
-        <div className="flex overflow-x-auto gap-2 mt-6 pt-4 border-t border-blue-800/50 scrollbar-none">
-          <button
-            onClick={() => setActiveSubTab('CARD')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
-              activeSubTab === 'CARD'
-                ? 'bg-white text-blue-900 shadow-md'
-                : 'text-blue-100 hover:bg-white/10'
-            }`}
-          >
-            <CreditCard className="w-4 h-4" />
-            <span>Carte d'Étudiant</span>
-          </button>
-          <button
-            onClick={() => setActiveSubTab('CERTIFICATE')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
-              activeSubTab === 'CERTIFICATE'
-                ? 'bg-white text-blue-900 shadow-md'
-                : 'text-blue-100 hover:bg-white/10'
-            }`}
-          >
-            <FileCheck className="w-4 h-4" />
-            <span>Certificat de Scolarité</span>
-          </button>
-          <button
-            onClick={() => setActiveSubTab('TRANSCRIPT')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
-              activeSubTab === 'TRANSCRIPT'
-                ? 'bg-white text-blue-900 shadow-md'
-                : 'text-blue-100 hover:bg-white/10'
-            }`}
-          >
-            <FileSpreadsheet className="w-4 h-4" />
-            <span>Relevé de Notes</span>
-          </button>
-          <button
-            onClick={() => setActiveSubTab('EXAMS')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
-              activeSubTab === 'EXAMS'
-                ? 'bg-white text-blue-900 shadow-md'
-                : 'text-blue-100 hover:bg-white/10'
-            }`}
-          >
-            <Calendar className="w-4 h-4" />
-            <span>Examens & Rattrapages</span>
-            {failedExamIds.length > 0 && (
-              <span className="bg-rose-500 text-white text-[10px] px-1.5 py-0.2 rounded-full">
-                {failedExamIds.length}
+        {/* Active Module Indicator & Quick Badges */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mt-5 pt-3 border-t border-blue-800/40 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-blue-300 font-medium">Module actif :</span>
+            <span className="bg-white/10 text-white font-bold px-3 py-1 rounded-lg border border-white/20 flex items-center gap-1.5">
+              {activeSubTab === 'CARD' && <CreditCard className="w-3.5 h-3.5 text-blue-300" />}
+              {activeSubTab === 'CERTIFICATE' && <FileCheck className="w-3.5 h-3.5 text-emerald-300" />}
+              {activeSubTab === 'TRANSCRIPT' && <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-300" />}
+              {activeSubTab === 'EXAMS' && <Calendar className="w-3.5 h-3.5 text-amber-300" />}
+              {activeSubTab === 'COURSES' && <BookOpen className="w-3.5 h-3.5 text-purple-300" />}
+              <span>
+                {activeSubTab === 'CARD'
+                  ? "Carte Numérique d'Étudiant & NFC"
+                  : activeSubTab === 'CERTIFICATE'
+                  ? 'Certificat de Scolarité Officiel'
+                  : activeSubTab === 'TRANSCRIPT'
+                  ? 'Relevé de Notes & Crédits ECTS'
+                  : 'Examens, Convocations & Rattrapages'}
               </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveSubTab('COURSES')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
-              activeSubTab === 'COURSES'
-                ? 'bg-white text-blue-900 shadow-md'
-                : 'text-blue-100 hover:bg-white/10'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>Cours & Ressources</span>
-          </button>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 text-[11px] text-blue-200">
+            <span>UFR Mathématiques & Informatique</span>
+            <span>•</span>
+            <span className="text-emerald-300 font-semibold">✓ Inscription Validée</span>
+          </div>
         </div>
       </div>
 

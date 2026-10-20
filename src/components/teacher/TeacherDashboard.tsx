@@ -54,6 +54,8 @@ interface TeacherDashboardProps {
   ) => void;
   onDeleteResource: (ressourceId: number) => void;
   onOpenEmailPreview: (etudiantEmail: string, studentName: string, matiereNom: string, note: number) => void;
+  activeTab?: 'GRADES' | 'RETAKES' | 'RESOURCES';
+  onTabChange?: (tab: 'GRADES' | 'RETAKES' | 'RESOURCES') => void;
 }
 
 export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
@@ -70,8 +72,15 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
   onAddResource,
   onDeleteResource,
   onOpenEmailPreview,
+  activeTab: activeTabProp,
+  onTabChange,
 }) => {
-  const [activeTab, setActiveTab] = useState<'GRADES' | 'RETAKES' | 'RESOURCES'>('GRADES');
+  const [localTab, setLocalTab] = useState<'GRADES' | 'RETAKES' | 'RESOURCES'>('GRADES');
+  const activeTab = activeTabProp || localTab;
+  const setActiveTab = (tab: 'GRADES' | 'RETAKES' | 'RESOURCES') => {
+    setLocalTab(tab);
+    if (onTabChange) onTabChange(tab);
+  };
 
   // Teacher subjects
   const teacherMatieres = matieres.filter((m) => m.enseignantId === user.id);
@@ -230,41 +239,29 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
           </div>
         </div>
 
-        {/* Sub-tabs */}
-        <div className="flex overflow-x-auto gap-2 mt-6 pt-4 border-t border-indigo-800/50">
-          <button
-            onClick={() => setActiveTab('GRADES')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
-              activeTab === 'GRADES'
-                ? 'bg-white text-indigo-900 shadow-md'
-                : 'text-indigo-100 hover:bg-white/10'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>Grille de Saisie des Notes & Validation</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('RETAKES')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
-              activeTab === 'RETAKES'
-                ? 'bg-white text-indigo-900 shadow-md'
-                : 'text-indigo-100 hover:bg-white/10'
-            }`}
-          >
-            <Calendar className="w-4 h-4" />
-            <span>Gestion Automatique des Rattrapages</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('RESOURCES')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition ${
-              activeTab === 'RESOURCES'
-                ? 'bg-white text-indigo-900 shadow-md'
-                : 'text-indigo-100 hover:bg-white/10'
-            }`}
-          >
-            <Upload className="w-4 h-4" />
-            <span>Dépôt de Cours & Ressources</span>
-          </button>
+        {/* Active Module Indicator */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mt-5 pt-3 border-t border-indigo-800/40 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-indigo-300 font-medium">Outil actif :</span>
+            <span className="bg-white/10 text-white font-bold px-3 py-1 rounded-lg border border-white/20 flex items-center gap-1.5">
+              {activeTab === 'GRADES' && <BookOpen className="w-3.5 h-3.5 text-indigo-300" />}
+              {activeTab === 'RETAKES' && <Calendar className="w-3.5 h-3.5 text-amber-300" />}
+              {activeTab === 'RESOURCES' && <Upload className="w-3.5 h-3.5 text-blue-300" />}
+              <span>
+                {activeTab === 'GRADES'
+                  ? 'Grille de Saisie des Notes & Publication Asynchrone'
+                  : activeTab === 'RETAKES'
+                  ? 'Planificateur Automatique de Rattrapages'
+                  : 'Dépôt de Supports Pédagogiques (PDF / Slides)'}
+              </span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 text-[11px] text-indigo-200">
+            <span>Département Informatique & Systèmes</span>
+            <span>•</span>
+            <span className="text-emerald-300 font-semibold">Droits de Notation Actifs</span>
+          </div>
         </div>
       </div>
 
